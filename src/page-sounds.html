@@ -1,0 +1,97 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="page-sounds">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+
+      .pilot-badge {
+          height: 40px;
+          width: 40px;
+          border-radius: 20px;
+          box-sizing: border-box;
+          background-color: #ddd;
+        }
+
+        .item {
+          @apply(--layout-horizontal);
+          cursor: pointer;
+          padding: 16px 22px;
+          border-bottom: 1px solid #DDD;
+        }
+
+        .primary {
+          font-size: 16px;
+          padding-left: 16px;
+        }
+    </style>
+
+    <paper-button on-tap="race_start">race start</paper-button>
+    <paper-button>race end</paper-button>
+    <paper-button on-tap="countdown">4 minute countdown</paper-button>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'page-sounds',
+
+      properties: {
+        data: {
+          type: Array,
+          value: function() {
+            return []
+          }
+        }
+      },
+
+      race_start: function(){
+        var timing = 1000;
+        var interval = 500;
+        var variance = 1000;
+        this.async(function(){this.tone(500,.3)},timing);
+        timing += interval + Math.floor(Math.random() * variance)
+        this.async(function(){this.tone(500,.3)},timing);
+        timing += interval + Math.floor(Math.random() * variance)
+        this.async(function(){this.tone(1000,.8)},timing);
+      },
+
+      countdown: function(){
+        var freq = 500;
+        var spacing = 500;
+        var length = .2;
+
+        for (var num of [0,1,2,3]) {
+          this.async(function(){this.tone(freq,length)},spacing*num);
+        }
+
+      },
+
+      tone: function(frequency, timeout){
+        var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        var oscillator = audioCtx.createOscillator();
+        oscillator.type = 'square';
+        oscillator.frequency.value = frequency;
+        oscillator.connect(audioCtx.destination);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + timeout);
+      }
+    });
+  </script>
+</dom-module>

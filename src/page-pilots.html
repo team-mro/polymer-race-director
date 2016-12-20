@@ -1,0 +1,88 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="page-pilots">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+
+      .pilot-badge {
+          height: 40px;
+          width: 40px;
+          border-radius: 20px;
+          box-sizing: border-box;
+          background-color: #ddd;
+        }
+
+        .item {
+          @apply(--layout-horizontal);
+          cursor: pointer;
+          padding: 16px 22px;
+          border-bottom: 1px solid #DDD;
+        }
+
+        .primary {
+          font-size: 16px;
+          padding-left: 16px;
+        }
+    </style>
+
+    <firebase-query
+        id="query"
+        path="users"
+        data="{{data}}">
+    </firebase-query>
+
+    <div>
+      <iron-list id="pilotList" items="[[data]]">
+        <template>
+          <div class="item">
+            <img class="pilot-badge" src="[[item.profileImageURL]]">
+            <div class="primary">
+              [[_calculatePilotName(item)]] [[_calculateTag(item)]]
+            </div>
+          </div>
+        </template>
+      </iron-list>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'page-pilots',
+
+      properties: {
+        data: {
+          type: Array,
+          value: function() {
+            return []
+          }
+        }
+      },
+
+      _calculatePilotName: function(pilot){
+        if(pilot.displayName && !/^\s*$/.test(pilot.displayName)) return pilot.displayName;
+        return pilot.providerName
+      },
+
+      _calculateTag: function(pilot){
+        if(pilot.tag && !/^\s*$/.test(pilot.tag)) return "("+pilot.tag+")"
+      }
+    });
+  </script>
+</dom-module>
