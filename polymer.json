@@ -3,7 +3,7 @@
   "shell": "src/racedirector-app.html",
   "fragments": [
     "src/page-pilots.html",
-    "src/page-sounds.html",]
+    "src/page-sounds.html",
     "src/pages-view404.html"
   ],
   "sourceGlobs": [
